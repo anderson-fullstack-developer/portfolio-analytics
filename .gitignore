@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+.vercel/
+*.log
+.DS_Store
+Thumbs.db
+
+# Segredos locais: o token do GoatCounter e a password ficam só aqui.
+.env*.local
+.env
