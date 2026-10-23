@@ -195,6 +195,13 @@ export function buildModel(raw: RawData, days: number): Model {
 
   const { series, bucket } = buildSeries(raw, days);
   const visits = raw.total || series.reduce((sum, p) => sum + p.value, 0);
+
+  // O GoatCounter não lista as visitas sem origem: são o que sobra do total.
+  const withSource = [...sources, ...applications].reduce((sum, r) => sum + r.value, 0);
+  const alreadyDirect = sources.some((r) => r.label === DIRECT);
+  if (!alreadyDirect && visits > withSource) {
+    sources.push({ label: DIRECT, value: visits - withSource });
+  }
   const projectsOpened = projects.reduce((sum, p) => sum + p.value, 0);
   const cvDownloads = eventCount("cv-download");
   const messages = eventCount("formulario-enviado") + eventCount("orcamento-enviado");

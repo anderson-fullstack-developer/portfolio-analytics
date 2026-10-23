@@ -98,7 +98,7 @@ function Content({ model }: { model: Model }) {
           label="Visitas"
           value={model.visits}
           change={delta(model.visits, model.visitsPrev)}
-          hint={`face aos ${model.days} dias anteriores`}
+          hint={model.visitsPrev ? `face aos ${model.days} dias anteriores` : "sem dados do período anterior"}
         />
         <StatTile label="Downloads do CV" value={model.cvDownloads} hint="botões do CV e Ctrl+K" />
         <StatTile label="Mensagens enviadas" value={model.messages} hint="formulário e pedidos de orçamento" />

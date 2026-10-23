@@ -52,8 +52,8 @@ export function VisitsChart({ points, unit }: { points: Point[]; unit: string })
   const barW = Math.max(1, Math.min(24, band >= 8 ? band * 0.62 : band - 2));
   const y = (v: number) => M.top + innerH - (v / top) * innerH;
 
-  // Poucas datas no eixo: início, meio e fim (e mais em ecrãs largos).
-  const labelCount = Math.min(points.length, width < 520 ? 3 : 6);
+  // Até 10 barras, todas as datas; acima disso, poucas datas (mais em ecrãs largos).
+  const labelCount = points.length <= 10 && width >= 520 ? points.length : Math.min(points.length, width < 520 ? 3 : 6);
   const labelIdx = new Set(
     Array.from({ length: labelCount }, (_, i) => Math.round((i * (points.length - 1)) / Math.max(labelCount - 1, 1)))
   );

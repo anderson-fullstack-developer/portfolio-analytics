@@ -29,9 +29,13 @@ export type RawData = {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const num = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? value : Number(value) || 0);
 
+// O dia mais recente pode vir com "daily" ainda a 0 e as visitas só em "hourly".
 const toDayStats = (list: any): DayStat[] =>
   Array.isArray(list)
-    ? list.map((s: any) => ({ day: String(s.day ?? "").slice(0, 10), daily: num(s.daily) }))
+    ? list.map((s: any) => {
+        const hourly = Array.isArray(s.hourly) ? s.hourly.reduce((sum: number, n: unknown) => sum + num(n), 0) : 0;
+        return { day: String(s.day ?? "").slice(0, 10), daily: Math.max(num(s.daily), hourly) };
+      })
     : [];
 
 const toStats = (json: any): Stat[] =>
@@ -97,11 +101,13 @@ export async function loadData(days: number): Promise<RawData> {
     return demoData(days, start, end);
   }
 
-  const range = { start, end };
+  // Datas completas: com só "2026-10-23", a API trata o fim como meia-noite e deixa o próprio dia de fora.
+  const range = { start: `${start}T00:00:00Z`, end: `${end}T23:59:59Z` };
+  const prevRange = { start: `${prevStart}T00:00:00Z`, end: `${prevEnd}T23:59:59Z` };
   // Pedidos em série: a API do GoatCounter limita pedidos em paralelo.
   const totalJson = await gc("/stats/total", range);
   const hitsJson = await gc("/stats/hits", { ...range, limit: "100" });
-  const prevJson = await optional(gc("/stats/total", { start: prevStart, end: prevEnd }), null);
+  const prevJson = await optional(gc("/stats/total", prevRange), null);
   const refs = await optional(gc("/stats/toprefs", { ...range, limit: "50" }).then(toStats), []);
   const locations = await optional(gc("/stats/locations", { ...range, limit: "20" }).then(toStats), []);
   const sizes = await optional(gc("/stats/sizes", range).then(toStats), []);
