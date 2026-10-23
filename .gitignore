@@ -9,3 +9,6 @@ Thumbs.db
 # Segredos locais: o token do GoatCounter e a password ficam só aqui.
 .env*.local
 .env
+
+# Cache do TypeScript
+*.tsbuildinfo
