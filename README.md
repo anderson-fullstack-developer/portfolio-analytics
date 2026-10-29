@@ -1,8 +1,16 @@
 # Portfolio Analytics
 
+[![CI](https://github.com/anderson-fullstack-developer/portfolio-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/anderson-fullstack-developer/portfolio-analytics/actions/workflows/ci.yml)
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Private analytics dashboard for my portfolio ([andersonneto.gt.tc](https://andersonneto.gt.tc)), built on top of the GoatCounter API.
 
-GoatCounter collects the data without cookies and without storing IP addresses; this app turns it into the questions that matter to a job seeker: *who opened my portfolio, did they download my CV, and which projects caught their attention?*
+GoatCounter collects the data without cookies and without storing IP addresses; this app turns it into the questions that matter for a developer portfolio: *who opened my portfolio, did they download my CV, and which projects caught their attention?*
+
+![Dashboard in demo mode](docs/dashboard.png)
+
+*Demo mode with sample data. The real dashboard is password-protected.*
 
 ## Features
 
@@ -39,3 +47,11 @@ Without `DASHBOARD_PASSWORD`, the dashboard is open in development only; in prod
 ## Deploying
 
 Import the repository in Vercel, set the four environment variables, and deploy.
+
+## Author
+
+**Anderson Neto**, Full-Stack Developer in Lisbon. [Portfolio](https://andersonneto.gt.tc) · [LinkedIn](https://linkedin.com/in/anderson-fullstack-developer)
+
+## License
+
+[MIT](LICENSE)
