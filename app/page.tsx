@@ -140,6 +140,38 @@ function Content({ model }: { model: Model }) {
         </details>
       </section>
 
+      <section className="card span-full">
+        <div className="card-head">
+          <div>
+            <h2>Visitas à página de freelancer</h2>
+            <p className="muted">
+              {period} · {formatInt(model.freelancerViews)} visitas
+            </p>
+          </div>
+        </div>
+        <VisitsChart points={model.freelancerSeries} unit="visitas" />
+        <details className="table-view">
+          <summary>Ver como tabela</summary>
+          <table>
+            <caption className="sr-only">Página de freelancer: {unit}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{model.bucket === "week" ? "Semana" : "Dia"}</th>
+                <th scope="col">Visitas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {model.freelancerSeries.map((p) => (
+                <tr key={p.key}>
+                  <td>{p.label}</td>
+                  <td>{formatInt(p.value)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
+      </section>
+
       <section className="card">
         <h2>Funil do recrutador</h2>
         <p className="muted">Da visita ao contacto.</p>

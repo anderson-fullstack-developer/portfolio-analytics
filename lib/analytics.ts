@@ -1,4 +1,4 @@
-import { addDays, isoDay, type RawData, type Stat } from "./goatcounter";
+import { addDays, isoDay, type DayStat, type RawData, type Stat } from "./goatcounter";
 
 export type Row = { label: string; value: number; hint?: string };
 export type Point = { key: string; label: string; value: number };
@@ -16,6 +16,7 @@ export type Model = {
   messages: number;
   projectsOpened: number;
   freelancerViews: number;
+  freelancerSeries: Point[];
   quoteRequests: number;
   funnel: Row[];
   sources: Row[];
@@ -136,16 +137,26 @@ const SHORT_DATE = new Intl.DateTimeFormat("pt-PT", { day: "numeric", month: "sh
 
 function buildSeries(raw: RawData, days: number): { series: Point[]; bucket: "day" | "week" } {
   // Total diário do GoatCounter; se a API não o devolver, soma as páginas vistas.
-  const byDay = new Map<string, number>();
   const source = raw.totalDaily.length
     ? raw.totalDaily
     : raw.hits.filter((h) => !h.event).flatMap((h) => h.stats);
+  return seriesFrom(source, raw.start, days);
+}
+
+/** Série de uma só página, com o mesmo agrupamento do gráfico principal. */
+function pageSeries(raw: RawData, path: string, days: number): Point[] {
+  const stats = raw.hits.filter((h) => !h.event && h.path === path).flatMap((h) => h.stats);
+  return seriesFrom(stats, raw.start, days).series;
+}
+
+function seriesFrom(source: DayStat[], start: string, days: number): { series: Point[]; bucket: "day" | "week" } {
+  const byDay = new Map<string, number>();
   for (const stat of source) {
     byDay.set(stat.day, (byDay.get(stat.day) ?? 0) + stat.daily);
   }
 
   const daily: Point[] = [];
-  const first = new Date(`${raw.start}T00:00:00Z`);
+  const first = new Date(`${start}T00:00:00Z`);
   for (let i = 0; i < days; i += 1) {
     const date = addDays(first, i);
     const key = isoDay(date);
@@ -226,6 +237,7 @@ export function buildModel(raw: RawData, days: number): Model {
     messages,
     projectsOpened,
     freelancerViews,
+    freelancerSeries: pageSeries(raw, "/freelancer.html", days),
     quoteRequests,
     funnel: [
       { label: "Visitaram o portfólio", value: visits },
