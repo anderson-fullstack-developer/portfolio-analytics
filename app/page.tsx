@@ -103,6 +103,11 @@ function Content({ model }: { model: Model }) {
         <StatTile label="Downloads do CV" value={model.cvDownloads} hint="botões do CV e Ctrl+K" />
         <StatTile label="Mensagens enviadas" value={model.messages} hint="formulário e pedidos de orçamento" />
         <StatTile label="Projetos abertos" value={model.projectsOpened} hint="janelas de detalhes abertas" />
+        <StatTile
+          label="Página de freelancer"
+          value={model.freelancerViews}
+          hint={`visitas · ${formatInt(model.quoteRequests)} ${model.quoteRequests === 1 ? "pedido" : "pedidos"} de orçamento`}
+        />
       </section>
 
       <section className="card span-full">

@@ -15,6 +15,8 @@ export type Model = {
   cvDownloads: number;
   messages: number;
   projectsOpened: number;
+  freelancerViews: number;
+  quoteRequests: number;
   funnel: Row[];
   sources: Row[];
   applications: Row[];
@@ -204,7 +206,11 @@ export function buildModel(raw: RawData, days: number): Model {
   }
   const projectsOpened = projects.reduce((sum, p) => sum + p.value, 0);
   const cvDownloads = eventCount("cv-download");
-  const messages = eventCount("formulario-enviado") + eventCount("orcamento-enviado");
+  const quoteRequests = eventCount("orcamento-enviado");
+  const messages = eventCount("formulario-enviado") + quoteRequests;
+  const freelancerViews = pageviews
+    .filter((p) => p.path === "/freelancer.html")
+    .reduce((sum, p) => sum + p.count, 0);
   const contacted = messages + eventCount("whatsapp") + eventCount("email");
 
   return {
@@ -219,6 +225,8 @@ export function buildModel(raw: RawData, days: number): Model {
     cvDownloads,
     messages,
     projectsOpened,
+    freelancerViews,
+    quoteRequests,
     funnel: [
       { label: "Visitaram o portfólio", value: visits },
       { label: "Abriram detalhes de projetos", value: projectsOpened },
